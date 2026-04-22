@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimLab — CSS Animation Visualizer</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+            <div class="logo-icon"></div>
+            Anim<span>Lab</span>
+        </div>
+        <div class="header-actions">
+            <button class="btn" onclick="resetAll()">Reset</button>
+            <button class="btn primary" onclick="copyCSS()">Copy CSS</button>
+        </div>
+    </header>
+
+    <div class="app">
+
+        <!-- LEFT: Presets -->
+        <div class="sidebar-left">
+            <div class="section-label">Animations</div>
+            <div id="presetContainer"></div>
+        </div>
+
+        <!-- CENTER: Preview -->
+        <div class="preview-area">
+            <div class="preview-toolbar">
+                <div class="shape-select">
+                    <button class="shape-btn active" title="Square" onclick="setShape('square',this)">&#9632;</button>
+                    <button class="shape-btn" title="Circle" onclick="setShape('circle',this)">&#9679;</button>
+                    <button class="shape-btn" title="Triangle" onclick="setShape('triangle',this)">&#9650;</button>
+                    <button class="shape-btn" title="Text" onclick="setShape('text',this)">T</button>
+                </div>
+                <div class="divider"></div>
+                <button class="play-btn" id="playBtn" onclick="togglePlay()">II</button>
+                <div class="speed-control">
+                    <span>Speed</span>
+                    <input type="range" min="0.2" max="3" step="0.1" value="1" id="speedRange"
+                        oninput="setSpeed(this.value)">
+                    <span id="speedVal">1.0x</span>
+                </div>
+            </div>
+
+            <div class="preview-canvas">
+                <div class="target-el" id="targetEl">
+                    <div class="ring"></div>
+                    <div id="innerShape"></div>
+                </div>
+            </div>
+
+            <div class="code-output">
+                <div class="code-header">
+                    Generated CSS
+                    <button class="copy-btn" id="copyBtn" onclick="copyCSS()">Copy</button>
+                </div>
+                <pre id="codeBlock"></pre>
+            </div>
+        </div>
+
+        <!-- RIGHT: Controls -->
+        <div class="sidebar-right">
+            <div class="section-label" style="padding-bottom:4px">Controls</div>
+
+            <div class="control-group">
+                <div class="control-row">
+                    <span class="control-label">Duration</span>
+                    <span class="control-value" id="durVal">1.0s</span>
+                </div>
+                <input type="range" class="ctrl" min="0.2" max="5" step="0.1" value="1" id="durRange"
+                    oninput="updateCtrl()">
+
+                <div class="control-row" style="margin-top:8px">
+                    <span class="control-label">Delay</span>
+                    <span class="control-value" id="delayVal">0.0s</span>
+                </div>
+                <input type="range" class="ctrl" min="0" max="3" step="0.1" value="0" id="delayRange"
+                    oninput="updateCtrl()">
+
+                <div class="control-row" style="margin-top:8px">
+                    <span class="control-label">Iterations</span>
+                    <span class="control-value" id="iterVal">inf</span>
+                </div>
+                <input type="range" class="ctrl" min="0" max="10" step="1" value="0" id="iterRange"
+                    oninput="updateCtrl()">
+            </div>
+
+            <div class="control-group">
+                <div class="control-label" style="margin-bottom:7px">Timing Function</div>
+                <select class="select-ctrl" id="timingSelect" onchange="updateCtrl()">
+                    <option value="ease">ease</option>
+                    <option value="linear">linear</option>
+                    <option value="ease-in">ease-in</option>
+                    <option value="ease-out">ease-out</option>
+                    <option value="ease-in-out">ease-in-out</option>
+                    <option value="cubic-bezier(0.68,-0.55,0.27,1.55)">spring</option>
+                    <option value="cubic-bezier(0.22,1,0.36,1)">expo out</option>
+                    <option value="cubic-bezier(0.55,0,1,0.45)">expo in</option>
+                    <option value="steps(6, end)">steps(6)</option>
+                    <option value="steps(12, end)">steps(12)</option>
+                </select>
+
+                <div class="control-label" style="margin-bottom:7px">Direction</div>
+                <select class="select-ctrl" id="dirSelect" onchange="updateCtrl()">
+                    <option value="normal">normal</option>
+                    <option value="reverse">reverse</option>
+                    <option value="alternate">alternate</option>
+                    <option value="alternate-reverse">alternate-reverse</option>
+                </select>
+
+                <div class="control-label" style="margin-bottom:7px">Fill Mode</div>
+                <select class="select-ctrl" id="fillSelect" onchange="updateCtrl()">
+                    <option value="none">none</option>
+                    <option value="forwards">forwards</option>
+                    <option value="backwards">backwards</option>
+                    <option value="both">both</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <div class="control-label" style="margin-bottom:8px">Color</div>
+                <div class="color-row" id="colorRow"></div>
+
+                <div class="control-group">
+                    <div class="control-label" style="margin-bottom:6px">Text Content</div>
+                    <input type="text" id="textInput" class="select-ctrl" placeholder="Enter text..."
+                        oninput="updateText(this.value)">
+                </div>
+
+                <div class="control-row" style="margin-top:12px">
+                    <span class="control-label">Size</span>
+                    <span class="control-value" id="sizeVal">80px</span>
+                </div>
+                <input type="range" class="ctrl" min="30" max="160" step="5" value="80" id="sizeRange"
+                    oninput="updateSize()">
+
+                <div class="control-row" style="margin-top:8px">
+                    <span class="control-label">Radius</span>
+                    <span class="control-value" id="radiusVal">16px</span>
+                </div>
+                <input type="range" class="ctrl" min="0" max="80" step="2" value="16" id="radiusRange"
+                    oninput="updateRadius()">
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
