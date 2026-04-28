@@ -15,7 +15,7 @@ AnimLab is a powerful and interactive tool to **visualize, customize, and export
 - Real-time preview
 - Play / Pause control
 - Speed adjustment
-
+      
 ### Shape Support
 - Square
 - Circle
