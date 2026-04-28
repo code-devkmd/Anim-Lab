@@ -5,7 +5,7 @@
 [![Made with](https://img.shields.io/badge/made%20with-JavaScript-blue.svg)]()
 
 AnimLab is a powerful and interactive tool to **visualize, customize, and export CSS animations** in real time. It is designed for developers, designers, and learners who want to experiment with animations without writing everything from scratch.
-
+          
 ---
 
 ## Features
